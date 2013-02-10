@@ -3,23 +3,39 @@
 <html>
 <head>
     <title>Olin Students</title>
-    <link href="//static.olinapps.com/olinstar.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link href="http://olinapps.com/static/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="http://olinapps.com/static/bootstrap/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="http://olinapps.com/static/style.css" rel="stylesheet">
 </head>
+
 <body>
+  <header>
     <ul id="olinstar">
-    	<li class="apps"><a href="//olinapps.com/">olin<b>apps</b>.com</a></li>
-    	<li class="students"><a href="//olinstudents.com/">olin<b>students</b>.com</a></li>
-    	<li class="clubs"><a href="//olinclubs.com/">olin<b>clubs</b>.com</a></li>
-    	<li class="projects"><a href="//olinprojects.com/">olin<b>projects</b>.com</a></li>
+      <li class="apps"><a href="//olinapps.com/">olin<b>apps</b>.com</a></li>
+      <li class="students"><a href="//olinstudents.com/">olin<b>students</b>.com</a></li>
+      <li class="clubs"><a href="//olinclubs.com/">olin<b>clubs</b>.com</a></li>
+      <li class="projects"><a href="//olinprojects.com/">olin<b>projects</b>.com</a></li>
     </ul>
+  </header>
 
-    <header>
-    <h1>Olin Students.com</h1>
-    <p>Hosting for personal sites for Olin students. Contact <a href="mailto:timothy.ryan@students.olin.edu">Tim Ryan 2013</a> with questions or hosting your own personal site.</p>
-    </header>
+  <div class="container-fluid">
+    <h1><a href="/">Olin Students</a></h1>
+    <div id="body">
+      <p>Personal websites and online portfolios for Olin students.</p>
 
-    <dl>
-    <dt><a href="http://madison.olinstudents.com">Madison May (2016)</a></dt>
-    </dl>
+      <style>
+      #them-students dt { float: left; width: 33%; margin: 0 0 10px; text-align: center; font-size: 16px; }
+      #them-students { overflow: auto; margin-bottom: 0; }
+      </style>
+
+      <dl id="them-students">
+      <dt><a href="http://madison.olinstudents.com">Madison May <small>'16</small></a></dt>
+      <dt><a href="http://timryan.org">Tim Ryan <small>'13.5</small></a></dt>
+      </dl>
+
+      <p><small>Contact <a href="mailto:timothy.ryan@students.olin.edu">Tim Ryan 2013</a> for free hosting or a _____.olinstudents.com domain name.</small></p>
+    </div>
+  </div>
 </body>
 </html>
