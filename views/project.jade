@@ -16,7 +16,8 @@ block content
         small
           i
             | #{link.provider_name} &mdash; #{link.url}
-          p= (link.description || '').substr(0, 100) + '...'
+          if link.description
+            p= (link.description || '').substr(0, 100) + (link.description.length > 100 ? '...' : '')
     div.project-body!= resanitize(project.body)
 
     form(action="/delete", method="post")
