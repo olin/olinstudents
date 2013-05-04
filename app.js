@@ -83,13 +83,13 @@ app.get('/projects/:id?', function (req, res) {
       res.render('edit', {
         user: req.user,
         title: 'Olin Projects',
-        project: project || {id: null}
+        project: project || {id: null, body: ''}
       })
     } else {
       res.render('project', {
         user: req.user,
         title: 'Olin Projects',
-        project: project || {id: null},
+        project: project || {id: null, body: ''},
         resanitize: resanitize
       })
     }
