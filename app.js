@@ -58,14 +58,6 @@ app.all('/*', function (req, res, next) {
 })
 
 /**
- * Embedly
- */
-
-var embed = require('embed');
-
-embed.key(process.env.EMBEDLY_KEY);
-
-/**
  * Routes
  */
 
