@@ -15,7 +15,7 @@ block content
             a(href=link.url)= link.title
         small
           i
-            | #{link.provider_name} &mdash; #{link.url}
+            | #{link.url} &mdash; #{link.provider_name}
           if link.description
             p= (link.description || '').substr(0, 100) + (link.description.length > 100 ? '...' : '')
     div.project-body!= resanitize(project.body)
