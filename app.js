@@ -111,7 +111,7 @@ app.get('/projects/:id?', function (req, res, next) {
   }
 })
 
-app.get('/projects/', function (req, res) {
+app.get('/projects', function (req, res) {
   db.projects.find(req.user ? {} : {
     published: true
   }).sort({date: -1}, function (err, docs) {
@@ -153,16 +153,18 @@ function getOembed (url, next) {
     key: process.env.EMBEDLY_KEY,
     url: url
   }, function (err, json) {
+    console.log(err, json);
+    json.url = json.url || url;
     next(null, !err && json);
   });
 }
 
-function getEmbeds (list, type) {
+function getEmbeds (list, type, type2) {
   // todo bind, next
   return function (next) {
     async.map(splitLines(list), getOembed, function (err, results) {
       next(err, results && results.filter(function (a) {
-        return a && a.type == type;
+        return a && (a.type == type || a.type == type2);
       }));
     });
   }
@@ -183,7 +185,7 @@ app.post('/projects/:id?', function (req, res) {
     async.auto({
       images: getEmbeds(req.body.images, 'photo'),
       videos: getEmbeds(req.body.videos, 'video'),
-      links: getEmbeds(req.body.links, 'link'),
+      links: getEmbeds(req.body.links, 'link', 'rich'),
     }, function (err, results) {
       var creators = typeof req.body.creators == 'string' ? [req.body.creators] : req.body.creators;
 
