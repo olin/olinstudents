@@ -13,11 +13,12 @@ block content
         div
           big
             a(href=link.url)= link.title
-        small
-          i
-            | #{link.url} &mdash; #{link.provider_name}
-          if link.description
-            p= (link.description || '').substr(0, 100) + (link.description.length > 100 ? '...' : '')
+        p
+          small
+            i
+              | #{link.url} &mdash; #{link.provider_name}
+        if link.description
+          p= (link.description || '').substr(0, 100) + (link.description.length > 100 ? '...' : '')
     div.project-body!= resanitize(project.body)
 
     form(action="/delete", method="post")
