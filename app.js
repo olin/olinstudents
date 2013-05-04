@@ -96,7 +96,7 @@ app.get('/projects/:id?', function (req, res, next) {
 
 app.get('/projects/', function (req, res) {
   db.projects.find({
-    published: true
+    published: Boolean(req.user)
   }).sort({date: -1}, function (err, docs) {
     console.log(docs);
     res.render('index', {
@@ -173,6 +173,9 @@ app.post('/projects/:id?', function (req, res) {
     }, {
       title: String(req.body.title),
       summary: String(req.body.summary),
+      creators: creators,
+      when: String(req.body.when),
+
       body: String(req.body.body),
       images_text: String(req.body.images),
       videos_text: String(req.body.videos),
@@ -180,11 +183,12 @@ app.post('/projects/:id?', function (req, res) {
       images: results.images,
       videos: results.videos,
       links: results.links,
+
       submitter: req.user.username,
       date: Date.now(),
+
       large: req.body.body.length > 300,
-      creators: creators,
-      published: true
+      published: false
     }, {
       upsert: true
     }, function () {

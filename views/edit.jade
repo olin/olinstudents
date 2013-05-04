@@ -15,6 +15,11 @@ block content
         input.span6(id='project-edit-summary', name='summary', type='text', placeholder='Describe your project in a sentence.', value=project.summary)
 
     .control-group
+      label.control-label(for='project-edit-when') Month or Date
+      .controls
+        input.span6(id='project-edit-when', name='when', type='text', placeholder='e.g. "April 2013", "May 4, 2013", or "Now".', value=project.when)
+
+    .control-group
       label.control-label(for='project-edit-creators') Students who worked on this project
       .controls
         select(name="creators", id="project-edit-creators", multiple).chzn-select.span6
