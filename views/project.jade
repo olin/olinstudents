@@ -3,6 +3,11 @@ extends layout
 block content
   div(class="project " + (project.large ? 'project-large' : 'project-small'))
     h1.project-title= project.title
+    p.project-subtitle
+      | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''} By <b>
+      != (project.creators || ['anonymous']).join('</b>, <b>')
+      | </b>.
+
     each video in (project.videos || [])
       div.project-video!= video.html
     each image in (project.images || [])

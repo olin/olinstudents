@@ -135,7 +135,7 @@ app.post('/projects/:id?', function (req, res) {
   }
 
   function splitLines (lines) {
-    return lines.split(/\r?\n/).filter(function (a) {
+    return String(lines).split(/\r?\n/).filter(function (a) {
       return !a.match(/^\s*$/);
     });
   }
@@ -171,11 +171,12 @@ app.post('/projects/:id?', function (req, res) {
     db.projects.update({
       _id: req.params.id ? db.ObjectId(req.params.id) : null
     }, {
-      title: req.body.title,
-      body: req.body.body,
-      images_text: req.body.images,
-      videos_text: req.body.videos,
-      links_text: req.body.links,
+      title: String(req.body.title),
+      summary: String(req.body.summary),
+      body: String(req.body.body),
+      images_text: String(req.body.images),
+      videos_text: String(req.body.videos),
+      links_text: String(req.body.links),
       images: results.images,
       videos: results.videos,
       links: results.links,

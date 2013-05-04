@@ -5,20 +5,25 @@ block content
 
   form.form-horizontal(method='post')
     .control-group
-      label.control-label(for='title') Title
+      label.control-label(for='project-edit-title') Title
       .controls
-        input.span6(id='title', name='title', type='text', placeholder='Describe your project in a few words.', value=project.title)
+        input.span6(id='project-edit-title', name='title', type='text', placeholder='Name or type of project.', value=project.title)
 
     .control-group
-      label.control-label(for='title') Students who worked on this project
+      label.control-label(for='project-edit-summary') Summary
       .controls
-        select(name="creators", multiple).chzn-select.span6
+        input.span6(id='project-edit-summary', name='summary', type='text', placeholder='Describe your project in a sentence.', value=project.summary)
+
+    .control-group
+      label.control-label(for='project-edit-creators') Students who worked on this project
+      .controls
+        select(name="creators", id="project-edit-creators", multiple).chzn-select.span6
           each person in directory
             option(value=person.id, selected=(project.creators || []).indexOf(person.id) > -1)= person.name
 
     hr
 
-    h4 Extended Summary (optional)
+    h4 Optional Information
     br
 
     .control-group
@@ -35,7 +40,7 @@ block content
         textarea.span6(id='body', name='links', rows=2, placeholder="e.g. http://archive.org/")= project.links_text
 
     .control-group
-      label.control-label(for='body') Project Summary<br><small>(HTML is allowed)</small>
+      label.control-label(for='body') Extended Description<br><small>(HTML is allowed)</small>
       .controls
         textarea.span6(id='body', name='body', rows=15, placeholder="Describe your project in depth.")= project.body
 
