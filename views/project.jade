@@ -23,7 +23,7 @@ block content
 
     form(action="/delete", method="post")
       p.project-footer
-        if project.submitter == user.username
+        if user && project.submitter == user.username
           span(style="float: right")
             a.btn.btn-mini.btn-info(href="/projects/" + project._id + "?edit", style="padding: 0 5px")
               | edit
