@@ -38,7 +38,13 @@ html
       .project-video, .project-video iframe { max-height: 450px; overflow: hidden; }
 
       .project-images { overflow: auto; }
-      .project-image { width: 150px; height: 150px; text-align: center; outline: 1px solid #aaa; background: #ccc; margin-top: 10px; margin-right: 10px; float: left; display: block; }
+      .project-image { height: 150px; text-align: center; outline: 1px solid #aaa; background: #ccc; margin-top: 10px; display: block; }
+
+
+      @media (min-width: 300px) {
+        width: 150px; 
+        margin-right: 10px; float: left; 
+      }
 
       .project-body { padding: 0 20px; }
       .project-body p { font-family: "Open Sans", Helvetica, Arial, sans-serif; }
