@@ -61,6 +61,8 @@ app.all('/*', function (req, res, next) {
  * Routes
  */
 
+app.all('*', olinapps.loginRequired);
+
 app.get('/', function (req, res) {
   res.redirect('/projects/');
 })
@@ -123,7 +125,8 @@ app.get('/projects/', function (req, res) {
   })
 });
 
-app.all('*', olinapps.loginRequired);
+// Untag here for when we have public pages
+// app.all('*', olinapps.loginRequired);
 
 app.post('/delete', function (req, res) {
   db.projects.update({
