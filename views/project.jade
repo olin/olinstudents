@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  div(class="project " + (project.body.length > 300 ? 'project-large' : 'project-small'))
+  div(class="project " + (project.large ? 'project-large' : 'project-small'))
     h1.project-title= project.title
     each video in (project.videos || [])
       div.project-video!= video.html

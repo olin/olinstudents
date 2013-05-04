@@ -79,8 +79,7 @@ app.get('/projects/:id?', function (req, res) {
   db.projects.findOne({
     _id: db.ObjectId(req.params.id),
   }, function (err, project) {
-    console.log(project)
-    if ('edit' in req.query) {
+    if ('edit' in req.query && req.user) {
       res.render('edit', {
         user: req.user,
         title: 'Olin Projects',
@@ -168,6 +167,7 @@ app.post('/projects/:id?', function (req, res) {
         links: results.links,
         submitter: req.user.username,
         date: Date.now(),
+        large: req.body.body.length > 300,
         published: true
       }, {
         upsert: true

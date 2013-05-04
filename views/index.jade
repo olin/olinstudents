@@ -3,7 +3,7 @@ extends layout
 block content
   ul(id='projects')
     for project in projects
-      li(class="project " + (project.body.length > 300 ? 'project-large' : 'project-small'))
+      li(class="project " + (project.large ? 'project-large' : 'project-small'))
         h1.project-title
           a(href="/projects/" + project._id)= project.title
         p.project-footer
