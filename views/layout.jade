@@ -2,10 +2,12 @@ doctype 5
 html
   head
     title= title
-    script(src='http://code.jquery.com/jquery.min.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
     script(src='/javascripts/script.js')
     link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css", rel="stylesheet")
     script(src="http://fitvidsjs.com/js/jquery.fitvids.js")
+    link(href="http://harvesthq.github.io/chosen/chosen/chosen.css", rel="stylesheet")
+    script(src="http://harvesthq.github.io/chosen/chosen/chosen.jquery.js")
 
     style
       #brand { background: #333; padding: 10px 15px; margin: 0; }
@@ -44,13 +46,14 @@ html
           window.location.href = $(this).find('a').prop('href');
         })
         $(".project-video").fitVids();
+        $(".chzn-select").chosen();
       })
 
   body
     #brand.container-fluid
       a#name(href="/")= title
       |  
-      a.btn.btn-success.btn-mini(href="/projects/") Create a Project
+      a.btn.btn-success.btn-mini(href="/projects/?edit") Create a Project
 
     #content.container-fluid
       block content

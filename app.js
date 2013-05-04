@@ -62,6 +62,39 @@ app.all('/*', function (req, res, next) {
  */
 
 app.get('/', function (req, res) {
+  res.redirect('/projects/');
+})
+
+app.get('/projects/:id?', function (req, res, next) {
+  db.projects.findOne({
+    _id: db.ObjectId(req.params.id),
+  }, function (err, project) {
+    if ('edit' in req.query && req.user) {
+      olinapps.directory.people(req, function (err, directory) {
+        res.render('edit', {
+          user: req.user,
+          title: 'Olin Projects',
+          project: project || {id: null, body: '', creators: [req.user.id]},
+          directory: directory && directory.people.map(function (a) {
+            a.id = a.email.replace(/@.*$/, '');
+            return a;
+          })
+        });
+      });
+    } else if (project) {
+      res.render('project', {
+        user: req.user,
+        title: 'Olin Projects',
+        project: project,
+        resanitize: resanitize
+      })
+    } else {
+      next();
+    }
+  })
+})
+
+app.get('/projects/', function (req, res) {
   db.projects.find({
     published: true
   }).sort({date: -1}, function (err, docs) {
@@ -74,27 +107,6 @@ app.get('/', function (req, res) {
     });
   })
 });
-
-app.get('/projects/:id?', function (req, res) {
-  db.projects.findOne({
-    _id: db.ObjectId(req.params.id),
-  }, function (err, project) {
-    if ('edit' in req.query && req.user) {
-      res.render('edit', {
-        user: req.user,
-        title: 'Olin Projects',
-        project: project || {id: null, body: ''}
-      })
-    } else {
-      res.render('project', {
-        user: req.user,
-        title: 'Olin Projects',
-        project: project || {id: null, body: ''},
-        resanitize: resanitize
-      })
-    }
-  })
-})
 
 app.all('*', olinapps.loginRequired);
 
@@ -118,8 +130,8 @@ app.get('/names', function (req, res) {
 })
 
 app.post('/projects/:id?', function (req, res) {
-  if (!(req.body.title && req.body.body)) {
-    res.json({error: true, message: 'Invalid quote'}, 500);
+  if (!(req.body.title)) {
+    res.json({error: true, message: 'Invalid project. Please enter at least a title.'}, 500);
   }
 
   function splitLines (lines) {
@@ -154,24 +166,29 @@ app.post('/projects/:id?', function (req, res) {
     videos: getEmbeds(req.body.videos, 'video'),
     links: getEmbeds(req.body.links, 'link'),
   }, function (err, results) {
-      db.projects.update({
-        _id: req.params.id ? db.ObjectId(req.params.id) : null
-      }, {
-        title: req.body.title,
-        body: req.body.body,
-        images_text: req.body.images,
-        videos_text: req.body.videos,
-        links_text: req.body.links,
-        images: results.images,
-        videos: results.videos,
-        links: results.links,
-        submitter: req.user.username,
-        date: Date.now(),
-        large: req.body.body.length > 300,
-        published: true
-      }, {
-        upsert: true
-      }, res.redirect.bind(res, '/'));
+    var creators = typeof req.body.creators == 'string' ? [req.body.creators] : req.body.creators;
+
+    db.projects.update({
+      _id: req.params.id ? db.ObjectId(req.params.id) : null
+    }, {
+      title: req.body.title,
+      body: req.body.body,
+      images_text: req.body.images,
+      videos_text: req.body.videos,
+      links_text: req.body.links,
+      images: results.images,
+      videos: results.videos,
+      links: results.links,
+      submitter: req.user.username,
+      date: Date.now(),
+      large: req.body.body.length > 300,
+      creators: creators,
+      published: true
+    }, {
+      upsert: true
+    }, function () {
+      res.redirect(req.url.replace(/\?.*$/, ''));
+    });
   })
 })
 

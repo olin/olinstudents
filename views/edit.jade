@@ -10,6 +10,18 @@ block content
         input.span6(id='title', name='title', type='text', placeholder='Describe your project in a few words.', value=project.title)
 
     .control-group
+      label.control-label(for='title') Students who worked on this project
+      .controls
+        select(name="creators", multiple).chzn-select.span6
+          each person in directory
+            option(value=person.id, selected=(project.creators || []).indexOf(person.id) > -1)= person.name
+
+    hr
+
+    h4 Extended Summary (optional)
+    br
+
+    .control-group
       label.control-label(for='body') Pictures<br><small>(one per line)</small>
       .controls
         textarea.span6(id='body', name='images', rows=2, placeholder="e.g. http://imgur.com/i/2FIK4")= project.images_text
@@ -27,6 +39,8 @@ block content
       .controls
         textarea.span6(id='body', name='body', rows=15, placeholder="Describe your project in depth.")= project.body
 
+    hr
+
     .control-group
       .controls
-        button.btn-success.btn(type='submit') Update Article
+        button.btn-success.btn-large.btn(type='submit') Update Article
