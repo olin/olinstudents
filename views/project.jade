@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  div(class="project " + (project.body.length > 300 ? 'project-large' : 'project-small'))
+    h1.project-title= project.title
+    each video in (project.videos || [])
+      div.project-video!= video.html
+    each image in (project.images || [])
+      div.project-image
+        img(src=image.url)
+    each link in (project.links || [])
+      div.project-link
+        div
+          big
+            a(href=link.url)= link.title
+        small
+          i
+            | #{link.provider_name} &mdash; #{link.url}
+          p= (link.description || '').substr(0, 100) + '...'
+    div.project-body!= resanitize(project.body)
+
+    form(action="/delete", method="post")
+      p.project-footer
+        if project.submitter == user.username
+          span(style="float: right")
+            a.btn.btn-mini.btn-info(href="/projects/" + project._id + "?edit", style="padding: 0 5px")
+              | edit
+            |  
+            button.btn.btn-mini.btn-danger(type="submit", name="id", value=project._id, style="padding: 0 5px", onclick="return confirm('Are you sure you want to purge this project from history?')")
+              | delete
+        | Submitted by #{project.submitter} on #{project.date} 

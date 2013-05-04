@@ -8,12 +8,15 @@ var express = require('express')
   , path = require('path')
   , olinapps = require('olinapps')
   , mongojs = require('mongojs')
-  , MongoStore = require('connect-mongo')(express);
+  , MongoStore = require('connect-mongo')(express)
+  , resanitize = require('resanitize')
+  , async = require('async')
+  , rem = require('rem');
 
 var app = express(), db;
 
 app.configure(function () {
-  db = mongojs(process.env.MONGOLAB_URI || 'olinapps-quotes', ['quotes']);
+  db = mongojs(process.env.MONGOLAB_URI || 'olinprojects', ['projects']);
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -26,7 +29,7 @@ app.configure(function () {
   app.use(express.session({
     secret: app.get('secret'),
     store: new MongoStore({
-      url: process.env.MONGOLAB_URI || 'mongodb://localhost/olinapps-quotes'
+      url: process.env.MONGOLAB_URI || 'mongodb://localhost/olinprojects'
     })
   }));
   app.use(app.router);
@@ -39,7 +42,7 @@ app.configure('development', function () {
 });
 
 app.configure('production', function () {
-  app.set('host', 'quotes.olinapps.com');
+  app.set('host', 'olinprojects.com');
 });
 
 /**
@@ -49,36 +52,65 @@ app.configure('production', function () {
 app.post('/login', olinapps.login);
 app.all('/logout', olinapps.logout);
 app.all('/*', olinapps.middleware);
-app.all('/*', olinapps.loginRequired);
-
 app.all('/*', function (req, res, next) {
-  if (olinapps.user(req).domain != 'students.olin.edu') {
-    return res.send('<h1>Students only.</h1> <p>Sorry, this application is closed to non-students. Please apply for next candidates\' weekend!</p>');
-  }
+  req.user = olinapps.user(req);
   next();
-});
+})
+
+/**
+ * Embedly
+ */
+
+var embed = require('embed');
+
+embed.key(process.env.EMBEDLY_KEY);
 
 /**
  * Routes
  */
 
 app.get('/', function (req, res) {
-  db.quotes.find({
+  db.projects.find({
     published: true
   }).sort({date: -1}, function (err, docs) {
     console.log(docs);
     res.render('index', {
-      title: 'Olin Quotes Board v4.0',
-      quotes: docs,
-      user: olinapps.user(req)
+      user: req.user,
+      title: 'Olin Projects',
+      projects: docs,
+      resanitize: resanitize,
     });
   })
 });
 
+app.get('/projects/:id?', function (req, res) {
+  db.projects.findOne({
+    _id: db.ObjectId(req.params.id),
+  }, function (err, project) {
+    console.log(project)
+    if ('edit' in req.query) {
+      res.render('edit', {
+        user: req.user,
+        title: 'Olin Projects',
+        project: project || {id: null}
+      })
+    } else {
+      res.render('project', {
+        user: req.user,
+        title: 'Olin Projects',
+        project: project || {id: null},
+        resanitize: resanitize
+      })
+    }
+  })
+})
+
+app.all('*', olinapps.loginRequired);
+
 app.post('/delete', function (req, res) {
-  db.quotes.update({
+  db.projects.update({
     _id: db.ObjectId(req.body.id),
-    submitter: olinapps.user(req).username
+    submitter: req.user.username
   }, {
     $set: {
       published: false
@@ -89,23 +121,66 @@ app.post('/delete', function (req, res) {
 })
 
 app.get('/names', function (req, res) {
-  db.quotes.distinct('name', function (err, names) {
+  db.projects.distinct('name', function (err, names) {
     res.json(names);
   });
 })
 
-app.post('/quotes', function (req, res) {
-  if (req.body.name && req.body.quote) {
-    db.quotes.save({
-      name: req.body.name,
-      quote: req.body.quote,
-      submitter: olinapps.user(req).username,
-      date: Date.now(),
-      published: true
-    }, res.redirect.bind(res, '/'));
-  } else {
+app.post('/projects/:id?', function (req, res) {
+  if (!(req.body.title && req.body.body)) {
     res.json({error: true, message: 'Invalid quote'}, 500);
   }
+
+  function splitLines (lines) {
+    return lines.split(/\r?\n/).filter(function (a) {
+      return !a.match(/^\s*$/);
+    });
+  }
+
+  var MAXWIDTH = 800;
+
+  function getOembed (url, next) {
+    rem.json('http://api.embed.ly/1/oembed').get({
+      key: process.env.EMBEDLY_KEY,
+      url: url
+    }, function (err, json) {
+      next(null, !err && json);
+    });
+  }
+
+  function getEmbeds (list, type) {
+    return function (next) {
+      async.map(splitLines(list), getOembed, function (err, results) {
+        next(err, results && results.filter(function (a) {
+          return a && a.type == type;
+        }));
+      });
+    }
+  }
+
+  async.auto({
+    images: getEmbeds(req.body.images, 'photo'),
+    videos: getEmbeds(req.body.videos, 'video'),
+    links: getEmbeds(req.body.links, 'link'),
+  }, function (err, results) {
+      db.projects.update({
+        _id: req.params.id ? db.ObjectId(req.params.id) : null
+      }, {
+        title: req.body.title,
+        body: req.body.body,
+        images_text: req.body.images,
+        videos_text: req.body.videos,
+        links_text: req.body.links,
+        images: results.images,
+        videos: results.videos,
+        links: results.links,
+        submitter: req.user.username,
+        date: Date.now(),
+        published: true
+      }, {
+        upsert: true
+      }, res.redirect.bind(res, '/'));
+  })
 })
 
 /**

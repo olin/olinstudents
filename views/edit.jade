@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  h1 Edit post
+
+  form.form-horizontal(method='post')
+    .control-group
+      label.control-label(for='title') Title
+      .controls
+        input.span6(id='title', name='title', type='text', placeholder='Describe your project in a few words.', value=project.title)
+
+    .control-group
+      label.control-label(for='body') Pictures<br><small>(one per line)</small>
+      .controls
+        textarea.span6(id='body', name='images', rows=2, placeholder="e.g. http://imgur.com/i/2FIK4")= project.images_text
+    .control-group
+      label.control-label(for='body') Videos<br><small>(one per line)</small>
+      .controls
+        textarea.span6(id='body', name='videos', rows=2, placeholder="e.g. http://youtube.com/?v=239249792")= project.videos_text
+    .control-group
+      label.control-label(for='body') External Links<br><small>(one per line)</small>
+      .controls
+        textarea.span6(id='body', name='links', rows=2, placeholder="e.g. http://archive.org/")= project.links_text
+
+    .control-group
+      label.control-label(for='body') Project Summary<br><small>(HTML is allowed)</small>
+      .controls
+        textarea.span6(id='body', name='body', rows=15, placeholder="Describe your project in depth.")= project.body
+
+    .control-group
+      .controls
+        button.btn-success.btn(type='submit') Update Article

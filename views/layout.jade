@@ -2,18 +2,55 @@ doctype 5
 html
   head
     title= title
-    link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css", rel="stylesheet")
-    link(rel="stylesheet", href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css")
     script(src='http://code.jquery.com/jquery.min.js')
-    script(src="http://code.jquery.com/jquery-1.9.1.js")
-    script(src="http://code.jquery.com/ui/1.10.1/jquery-ui.js")
     script(src='/javascripts/script.js')
+    link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css", rel="stylesheet")
+    script(src="http://fitvidsjs.com/js/jquery.fitvids.js")
+
     style
-      #quotes, #quotes li { display: block; padding: 0; margin: 0; }
-      #quotes li { margin: 15px 0 30px }
-      #quotes li blockquote { margin-bottom: 5px; }
-      #quotes li small { color: #bbb; font-size: 10px }
-      #quotes li small:hover { color: black; }
+      #brand { background: #333; padding: 10px 15px; margin: 0; }
+      #name { font-weight: bold; color: #ccc; font-size: 18px; }
+      #brand .btn { float: right; }
+      
+      @media (max-width: 767px) {
+        body { padding: 0;}
+        #content { padding: 0 20px; }
+      }
+
+      #content { max-width: 800px; margin-left: auto; margin-right: auto; }
+
+      #projects, #projects > li { display: block; margin: 0; padding: 0; }
+      #projects > li { background: white; }
+
+      .project-video { outline: 1px solid #aaa; background: #ccc; }
+      .project-video iframe { display: block; margin-left: auto; margin-right: auto; }
+      .project-video, .project-video iframe { max-height: 450px; overflow: hidden; }
+
+      .project-body p { font-family: "Open Sans", Helvetica, Arial, sans-serif; }
+      .project-body { margin: 25px 0 15px; font-size: 16px; line-height: 1.5; }
+      .project-body h2 { margin-top: 25px; }
+
+      .project-title { margin: 40px 0 20px; font-size: 50px; }
+      .project-small .project-title { font-size: 30px; margin-top: 25px; }
+      .project-link { border: 1px solid #afa; margin: 10px 0; padding: 10px 20px 0; }
+      .project-link:hover { background: #cfc; cursor: pointer; }
+
+      .project-footer { font-size: 12px; border-top: 1px solid #ddd; padding-top: 5px; color: #888;
+      margin: 30px 0 40px; }
+
+    script
+      $(function () {
+        $('.project-link').on('click', function (e) {
+          window.location.href = $(this).find('a').prop('href');
+        })
+        $(".project-video").fitVids();
+      })
+
   body
-    .container-fluid
+    #brand.container-fluid
+      a#name(href="/")= title
+      |  
+      a.btn.btn-success.btn-mini(href="/projects/") Create a Project
+
+    #content.container-fluid
       block content
