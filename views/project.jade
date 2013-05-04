@@ -4,15 +4,19 @@ block content
   div(class="project " + (project.large ? 'project-large' : 'project-small'))
     h1.project-title= project.title
     p.project-subtitle
+      if project.when
+        i= project.when
+        |  &mdash; 
       | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''} By <b>
       != (project.creators || ['anonymous']).join('</b>, <b>')
       | </b>.
 
     each video in (project.videos || [])
       div.project-video!= video.html
-    each image in (project.images || [])
-      div.project-image
-        img(src=image.url)
+    div.project-images
+      each image in (project.images || [])
+        a.project-image(href=image.url)
+          img(src=getImageUrl(image.url, 150, 150))
     each link in (project.links || [])
       div.project-link
         div

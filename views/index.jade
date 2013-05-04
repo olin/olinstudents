@@ -6,5 +6,10 @@ block content
       li(class="project " + (project.large ? 'project-large' : 'project-small'))
         h1.project-title
           a(href="/projects/" + project._id)= project.title
-        p.project-footer
-          | Submitted by #{project.submitter} on #{project.date} 
+        p.project-subtitle
+          if project.when
+            i= project.when
+            |  &mdash; 
+          | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''} By <b>
+          != (project.creators || ['anonymous']).join('</b>, <b>')
+          | </b>.

@@ -65,38 +65,53 @@ app.get('/', function (req, res) {
   res.redirect('/projects/');
 })
 
+function getImageUrl (url, width, height) {
+  return "https://i.embed.ly/1/display/resize?" + require('querystring').stringify({
+    key: process.env.EMBEDLY_KEY,
+    url: url,
+    width: width,
+    height: height,
+    grow: "false"
+  });
+}
+
 app.get('/projects/:id?', function (req, res, next) {
-  db.projects.findOne({
-    _id: db.ObjectId(req.params.id),
-  }, function (err, project) {
-    if ('edit' in req.query && req.user) {
-      olinapps.directory.people(req, function (err, directory) {
-        res.render('edit', {
+  try {
+    db.projects.findOne({
+      _id: db.ObjectId(req.params.id),
+    }, function (err, project) {
+      if ('edit' in req.query && req.user) {
+        olinapps.directory.people(req, function (err, directory) {
+          res.render('edit', {
+            user: req.user,
+            title: 'Olin Projects',
+            project: project || {id: null, body: '', creators: [req.user.id]},
+            directory: directory && directory.people.map(function (a) {
+              a.id = a.email.replace(/@.*$/, '');
+              return a;
+            })
+          });
+        });
+      } else if (project) {
+        res.render('project', {
           user: req.user,
           title: 'Olin Projects',
-          project: project || {id: null, body: '', creators: [req.user.id]},
-          directory: directory && directory.people.map(function (a) {
-            a.id = a.email.replace(/@.*$/, '');
-            return a;
-          })
-        });
-      });
-    } else if (project) {
-      res.render('project', {
-        user: req.user,
-        title: 'Olin Projects',
-        project: project,
-        resanitize: resanitize
-      })
-    } else {
-      next();
-    }
-  })
+          project: project,
+          resanitize: resanitize,
+          getImageUrl: getImageUrl
+        })
+      } else {
+        next();
+      }
+    })
+  } catch (e) {
+    res.json({error: true}, 404);
+  }
 })
 
 app.get('/projects/', function (req, res) {
-  db.projects.find({
-    published: Boolean(req.user)
+  db.projects.find(req.user ? {} : {
+    published: true
   }).sort({date: -1}, function (err, docs) {
     console.log(docs);
     res.render('index', {
@@ -121,81 +136,83 @@ app.post('/delete', function (req, res) {
   }, function () {
     res.redirect('/');
   })
-})
+});
 
-app.get('/names', function (req, res) {
-  db.projects.distinct('name', function (err, names) {
-    res.json(names);
+
+function splitLines (lines) {
+  return String(lines).split(/\r?\n/).filter(function (a) {
+    return !a.match(/^\s*$/);
   });
-})
+}
+
+function getOembed (url, next) {
+  rem.json('http://api.embed.ly/1/oembed').get({
+    key: process.env.EMBEDLY_KEY,
+    url: url
+  }, function (err, json) {
+    next(null, !err && json);
+  });
+}
+
+function getEmbeds (list, type) {
+  // todo bind, next
+  return function (next) {
+    async.map(splitLines(list), getOembed, function (err, results) {
+      next(err, results && results.filter(function (a) {
+        return a && a.type == type;
+      }));
+    });
+  }
+}
 
 app.post('/projects/:id?', function (req, res) {
   if (!(req.body.title)) {
-    res.json({error: true, message: 'Invalid project. Please enter at least a title.'}, 500);
+    return res.json({error: true, message: 'Invalid project. Please enter at least a title.'}, 500);
   }
 
-  function splitLines (lines) {
-    return String(lines).split(/\r?\n/).filter(function (a) {
-      return !a.match(/^\s*$/);
-    });
-  }
-
-  var MAXWIDTH = 800;
-
-  function getOembed (url, next) {
-    rem.json('http://api.embed.ly/1/oembed').get({
-      key: process.env.EMBEDLY_KEY,
-      url: url
-    }, function (err, json) {
-      next(null, !err && json);
-    });
-  }
-
-  function getEmbeds (list, type) {
-    return function (next) {
-      async.map(splitLines(list), getOembed, function (err, results) {
-        next(err, results && results.filter(function (a) {
-          return a && a.type == type;
-        }));
-      });
+  db.projects.findOne({
+    _id: db.ObjectId(req.params.id),
+  }, function (err, project) {
+    if (project && project.submitter != req.user.username) {
+      return res.json({error: true, message: 'You do not have permission to edit this project.'}, 400);
     }
-  }
 
-  async.auto({
-    images: getEmbeds(req.body.images, 'photo'),
-    videos: getEmbeds(req.body.videos, 'video'),
-    links: getEmbeds(req.body.links, 'link'),
-  }, function (err, results) {
-    var creators = typeof req.body.creators == 'string' ? [req.body.creators] : req.body.creators;
+    async.auto({
+      images: getEmbeds(req.body.images, 'photo'),
+      videos: getEmbeds(req.body.videos, 'video'),
+      links: getEmbeds(req.body.links, 'link'),
+    }, function (err, results) {
+      var creators = typeof req.body.creators == 'string' ? [req.body.creators] : req.body.creators;
 
-    db.projects.update({
-      _id: req.params.id ? db.ObjectId(req.params.id) : null
-    }, {
-      title: String(req.body.title),
-      summary: String(req.body.summary),
-      creators: creators,
-      when: String(req.body.when),
+      db.projects.update({
+        _id: req.params.id ? db.ObjectId(req.params.id) : null
+      }, {
+        title: String(req.body.title),
+        summary: String(req.body.summary),
+        creators: creators,
+        when: String(req.body.when),
 
-      body: String(req.body.body),
-      images_text: String(req.body.images),
-      videos_text: String(req.body.videos),
-      links_text: String(req.body.links),
-      images: results.images,
-      videos: results.videos,
-      links: results.links,
+        body: String(req.body.body),
+        images_text: String(req.body.images),
+        videos_text: String(req.body.videos),
+        links_text: String(req.body.links),
+        images: results.images,
+        videos: results.videos,
+        links: results.links,
 
-      submitter: req.user.username,
-      date: Date.now(),
+        submitter: req.user.username,
+        date: Date.now(),
 
-      large: req.body.body.length > 300,
-      published: false
-    }, {
-      upsert: true
-    }, function () {
-      res.redirect(req.url.replace(/\?.*$/, ''));
-    });
+        large: req.body.body.length > 300,
+        published: false
+      }, {
+        upsert: true
+      }, function () {
+        res.redirect(req.url.replace(/\?.*$/, ''));
+      });
+    })
   })
-})
+});
 
 /**
  * Launch
