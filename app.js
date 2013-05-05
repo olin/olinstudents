@@ -11,7 +11,8 @@ var express = require('express')
   , MongoStore = require('connect-mongo')(express)
   , resanitize = require('resanitize')
   , async = require('async')
-  , rem = require('rem');
+  , rem = require('rem')
+  , marked = require('marked');
 
 var app = express(), db;
 
@@ -229,10 +230,12 @@ app.post('/projects/:id?', function (req, res) {
         creators: creators,
         when: String(req.body.when),
 
-        body: String(req.body.body),
+        body_text: String(req.body.body),
         images_text: String(req.body.images),
         videos_text: String(req.body.videos),
         links_text: String(req.body.links),
+
+        body: marked(String(req.body.body)),
         images: results.images,
         videos: results.videos,
         links: results.links,

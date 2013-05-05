@@ -18,6 +18,7 @@
     "async": "~0.2.8",
     "rem": "~0.6.6-1",
     "resanitize": "~0.1.10",
-    "olinapps": "~0.1.2"
+    "olinapps": "~0.1.2",
+    "marked": "~0.2.8"
   }
 }
