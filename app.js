@@ -101,7 +101,7 @@ app.get('/projects/:id?', function (req, res, next) {
           });
         });
       } else if (project && !project.published && !req.user) {
-        return olinapps.loginRequired(req, res, next);
+        olinapps.loginRequired(req, res, next);
       } else if (project) {
         res.render('project', {
           user: req.user,
@@ -135,18 +135,18 @@ app.get('/projects', function (req, res) {
 
 app.all('*', olinapps.loginRequired);
 
-app.post('/delete', function (req, res) {
-  db.projects.update({
-    _id: db.ObjectId(req.body.id),
-    submitter: req.user.username
-  }, {
-    $set: {
-      published: false
-    }
-  }, function () {
-    res.redirect('/');
-  })
-});
+// app.post('/delete', function (req, res) {
+//   db.projects.remove({
+//     _id: db.ObjectId(req.body.id),
+//     submitter: req.user.username
+//   }, {
+//     $set: {
+//       published: false
+//     }
+//   }, function () {
+//     res.redirect('/');
+//   })
+// });
 
 
 function splitLines (lines) {
@@ -179,6 +179,10 @@ function getEmbeds (list, type, type2) {
   }
 }
 
+function isAuthorized (project, req) {
+  return project && req.user && (project.submitter == req.user.username || req.user.username == 'timothy.ryan' || (project.creators || []).indexOf(req.user.username) >= -1);
+}
+
 app.post('/projects/:id?', function (req, res) {
   if (!(req.body.title)) {
     return res.json({error: true, message: 'Invalid project. Please enter at least a title.'}, 500);
@@ -187,7 +191,7 @@ app.post('/projects/:id?', function (req, res) {
   db.projects.findOne({
     _id: db.ObjectId(req.params.id),
   }, function (err, project) {
-    if (project && project.submitter != req.user.username && req.user.username != 'timothy.ryan') {
+    if (!isAuthorized(project, req)) {
       return res.json({error: true, message: 'You do not have permission to edit this project.'}, 400);
     }
 
