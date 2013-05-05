@@ -64,9 +64,9 @@ app.get('/authenticate', olinapps.loginRequired, function (req, res) {
  * Routes
  */
 
-app.get('/', function (req, res) {
-  res.redirect('/projects/');
-})
+function isAuthorized (project, req) {
+  return project && req.user && (project.submitter == req.user.username || req.user.username == 'timothy.ryan' || (project.creators || []).indexOf(req.user.username) >= -1);
+}
 
 function getImageUrl (url, width, height) {
   return "https://i.embed.ly/1/display/resize?" + require('querystring').stringify({
@@ -95,6 +95,10 @@ function getDirectoryCached (req, next) {
   }
 }
 
+app.get('/', function (req, res) {
+  res.redirect('/projects/');
+})
+
 app.get('/projects/:id?', function (req, res, next) {
   if ('edit' in req.query && !req.user) {
     return olinapps.loginRequired(req, res, next);
@@ -105,15 +109,17 @@ app.get('/projects/:id?', function (req, res, next) {
       _id: db.ObjectId(req.params.id),
     }, function (err, project) {
       if ('edit' in req.query) {
+        project = project || {id: null, body: '', creators: [req.user.id]},
         getDirectoryCached(req, function (err, directory) {
           res.render('edit', {
             user: req.user,
             title: 'Olin Projects',
-            project: project || {id: null, body: '', creators: [req.user.id]},
+            project: project,
             directory: directory.people.map(function (a) {
               a.id = a.email.replace(/@.*$/, '');
               return a;
-            })
+            }),
+            canedit: isAuthorized(project, req)
           });
         });
       } else if (project && !project.published && !req.user) {
@@ -124,7 +130,8 @@ app.get('/projects/:id?', function (req, res, next) {
           title: 'Olin Projects',
           project: project,
           resanitize: resanitize,
-          getImageUrl: getImageUrl
+          getImageUrl: getImageUrl,
+          canedit: isAuthorized(project, req)
         })
       } else {
         next();
@@ -193,10 +200,6 @@ function getEmbeds (list, type, type2) {
       }));
     });
   }
-}
-
-function isAuthorized (project, req) {
-  return project && req.user && (project.submitter == req.user.username || req.user.username == 'timothy.ryan' || (project.creators || []).indexOf(req.user.username) >= -1);
 }
 
 app.post('/projects/:id?', function (req, res) {
