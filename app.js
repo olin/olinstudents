@@ -56,6 +56,9 @@ app.all('/*', function (req, res, next) {
   req.user = olinapps.user(req);
   next();
 })
+app.get('/authenticate', olinapps.loginRequired, function (req, res) {
+  res.redirect('/');
+})
 
 /**
  * Routes
@@ -91,7 +94,7 @@ app.get('/projects/:id?', function (req, res, next) {
             user: req.user,
             title: 'Olin Projects',
             project: project || {id: null, body: '', creators: [req.user.id]},
-            directory: directory && directory.people && directory.people.map(function (a) {
+            directory: (directory && directory.people || []).map(function (a) {
               a.id = a.email.replace(/@.*$/, '');
               return a;
             })
