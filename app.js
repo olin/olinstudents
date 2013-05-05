@@ -78,6 +78,23 @@ function getImageUrl (url, width, height) {
   });
 }
 
+var _directory = null
+
+function getDirectoryCached (req, next) {
+  if (_directory) {
+    next(null, _directory);
+  } else {
+    olinapps.directory.people(req, function (err, directory) {
+      if (err || !directory || !directory.people) {
+        next(err || 'Could not fetch directory.', {people: []});
+      } else {
+        _directory = directory;
+        next(null, _directory);
+      }
+    });
+  }
+}
+
 app.get('/projects/:id?', function (req, res, next) {
   if ('edit' in req.query && !req.user) {
     return olinapps.loginRequired(req, res, next);
@@ -88,13 +105,12 @@ app.get('/projects/:id?', function (req, res, next) {
       _id: db.ObjectId(req.params.id),
     }, function (err, project) {
       if ('edit' in req.query) {
-        olinapps.directory.people(req, function (err, directory) {
-          console.log(directory);
+        getDirectoryCached(req, function (err, directory) {
           res.render('edit', {
             user: req.user,
             title: 'Olin Projects',
             project: project || {id: null, body: '', creators: [req.user.id]},
-            directory: (directory && directory.people || []).map(function (a) {
+            directory: directory.people.map(function (a) {
               a.id = a.email.replace(/@.*$/, '');
               return a;
             })
