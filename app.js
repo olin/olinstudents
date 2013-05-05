@@ -211,7 +211,7 @@ app.post('/projects/:id?', function (req, res) {
   db.projects.findOne({
     _id: db.ObjectId(req.params.id),
   }, function (err, project) {
-    if (!isAuthorized(project, req)) {
+    if (project && !isAuthorized(project, req)) {
       return res.json({error: true, message: 'You do not have permission to edit this project.'}, 400);
     }
 
