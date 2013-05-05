@@ -77,7 +77,7 @@ function getImageUrl (url, width, height) {
 
 app.get('/projects/:id?', function (req, res, next) {
   if ('edit' in req.query && !req.user) {
-    return res.redirect('/login/');
+    return olinapps.loginRequired(req, res, next);
   }
 
   try {
@@ -90,14 +90,14 @@ app.get('/projects/:id?', function (req, res, next) {
             user: req.user,
             title: 'Olin Projects',
             project: project || {id: null, body: '', creators: [req.user.id]},
-            directory: directory && directory.people.map(function (a) {
+            directory: directory && directory.people && directory.people.map(function (a) {
               a.id = a.email.replace(/@.*$/, '');
               return a;
             })
           });
         });
-      } else if (project && !project.published && !res.user) {
-        res.redirect('/login/');
+      } else if (project && !project.published && !req.user) {
+        return olinapps.loginRequired(req, res, next);
       } else if (project) {
         res.render('project', {
           user: req.user,
