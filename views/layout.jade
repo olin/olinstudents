@@ -43,11 +43,15 @@ html
       .project-video, .project-video iframe { max-height: 450px; overflow: hidden; }
 
       .project-images { overflow: auto; }
-      .project-image { height: 150px; text-align: center; outline: 1px solid #aaa; background: #ccc; margin-top: 10px; }
+      .project-image { text-align: center; outline: 1px solid #aaa; background: #ccc; margin-top: 10px; }
+      .project-image-table { display: table; height: 100%; }
+      .project-image-cell { display: table-cell; text-align: center; vertical-align: middle; }
       .project-image img { display: block; margin: 0 auto; }
 
-      @media (min-width: 300px) {
-        .project-image { width: 150px; margin-right: 10px; float: left; }
+      @media (min-width: 500px) {
+        .project-images { display: table; width: 100%; }
+        .project-images-cell { display: table-cell; text-align: center; }
+        .project-image { height: 150px; width: 150px; margin-right: 10px; display: inline-block; }
       }
 
       .project-body { padding: 0 20px; }
