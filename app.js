@@ -243,7 +243,7 @@ app.post('/projects/:id?', function (req, res) {
         submitter: req.user.username,
         date: Date.now(),
 
-        large: req.body.body.length > 300,
+        large: req.body.public || req.body.body.length > 500,
         published: !!req.body.public
       }, {
         upsert: true
