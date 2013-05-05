@@ -86,6 +86,7 @@ app.get('/projects/:id?', function (req, res, next) {
     }, function (err, project) {
       if ('edit' in req.query) {
         olinapps.directory.people(req, function (err, directory) {
+          console.log(directory);
           res.render('edit', {
             user: req.user,
             title: 'Olin Projects',
