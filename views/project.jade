@@ -6,10 +6,12 @@ block content
     p.project-subtitle
       if project.when
         i= project.when
-        |  &mdash; 
-      | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''} By <b>
-      != (project.creators || ['anonymous']).join('</b>, <b>')
-      | </b>.
+        if project.creators && project.creators.length
+          |  &mdash; 
+      if project.creators && project.creators.length
+        | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''} By <b>
+        != project.creators.join('</b>, <b>')
+        | </b>.
 
     each video in (project.videos || [])
       div.project-video!= video.html
