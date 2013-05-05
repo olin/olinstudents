@@ -3,9 +3,12 @@ extends layout
 block content
   ul(id='projects')
     for project in projects
-      li(class="project " + (project.large ? 'project-large' : 'project-small'))
+      li(class="project " + (project.large ? 'project-large' : 'project-small') + ' ' + (project.published ? 'project-public' : 'project-private'))
         h1.project-title
           a(href="/projects/" + project._id)= project.title
+            // if !project.published
+            //  |  
+            //  span.badge.badge(style="vertical-align: middle") Unpublished
         p.project-subtitle
           if project.when
             i= project.when

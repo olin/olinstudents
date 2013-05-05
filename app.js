@@ -211,7 +211,7 @@ app.post('/projects/:id?', function (req, res) {
         date: Date.now(),
 
         large: req.body.body.length > 300,
-        published: false
+        published: !!req.body.public
       }, {
         upsert: true
       }, function () {

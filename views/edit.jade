@@ -98,12 +98,12 @@ block content
         |  Yes!
 
     .control-group
-      label.control-label(for='projects-edit-privacy') Is your post private or public?
+      label.control-label Is your post private or public?
       .controls
-        input(type="radio", name="projects-edit-privacy", checked)
+        input(type="radio", name="public", value="", checked=!project.published)
         |  Private&mdash;My audience is Olin College
         br
-        input(type="radio", name="projects-edit-public")
+        input(type="radio", name="public", value="true", checked=project.published)
         |  Public&mdash;My audience is the entire world
 
     hr
