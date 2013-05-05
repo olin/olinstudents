@@ -76,11 +76,15 @@ function getImageUrl (url, width, height) {
 }
 
 app.get('/projects/:id?', function (req, res, next) {
+  if ('edit' in req.query && !req.user) {
+    return res.redirect('/login/');
+  }
+
   try {
     db.projects.findOne({
       _id: db.ObjectId(req.params.id),
     }, function (err, project) {
-      if ('edit' in req.query && req.user) {
+      if ('edit' in req.query) {
         olinapps.directory.people(req, function (err, directory) {
           res.render('edit', {
             user: req.user,
@@ -92,6 +96,8 @@ app.get('/projects/:id?', function (req, res, next) {
             })
           });
         });
+      } else if (project && !project.published && !res.user) {
+        res.redirect('/login/');
       } else if (project) {
         res.render('project', {
           user: req.user,
