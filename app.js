@@ -145,6 +145,8 @@ app.post('/delete', function (req, res) {
 function splitLines (lines) {
   return String(lines).split(/\r?\n/).filter(function (a) {
     return !a.match(/^\s*$/);
+  }).map(function (a) {
+    return (a.match(/^\S+/) || [''])[0]
   });
 }
 

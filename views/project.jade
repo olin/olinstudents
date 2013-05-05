@@ -21,6 +21,14 @@ block content
               span.project-image-cell
                 img(src=getImageUrl(image.url, 150, 150))
 
+          div.lightbox.hide.fade(id="projectimage" + i, tabinde="-1", role="dialog", aria-hidden="true")
+            .lightbox-header
+              button.close(type="button", data-dismiss="lightbox", aria-hidden="true") &times;
+            .lightbox-content
+              img(src=image.url)
+              // .lightbox-caption
+              //  p An image for this project.
+
     div.project-body!= resanitize(project.body)
 
     if project.links && project.links.length
