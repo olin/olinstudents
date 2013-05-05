@@ -77,7 +77,10 @@ html
   body
     #brand.container-fluid
       a.btn.btn-success.btn-mini(href="/projects/?edit") List your Project or Idea
-      a.btn.btn-success.btn-mini(href="/authenticate") Login
+      if user
+        a.btn.btn-warning.btn-mini(href="/logout") Logout
+      else
+        a.btn.btn-success.btn-mini(href="/authenticate") Login
       |  
       a#name(href="/")= title
 
