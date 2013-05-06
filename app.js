@@ -240,7 +240,7 @@ app.post('/projects/:id?', function (req, res) {
         videos: results.videos,
         links: results.links,
 
-        submitter: req.user.username,
+        submitter: project && project.submitter || req.user.username,
         date: Date.now(),
 
         large: req.body.public || req.body.body.length > 500,
