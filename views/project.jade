@@ -60,3 +60,5 @@ block content
             button.btn.btn-mini.btn-danger(type="submit", name="id", value=project._id, style="padding: 0 5px", onclick="return confirm('Are you sure you want to purge this project from history?')")
               | delete
         | Submitted by #{project.submitter} on #{project.date} 
+
+    div.fb-comments(data-href="http://www.olinprojects.com/projects/" + project._id, data-width="800", data-num-posts="30")
