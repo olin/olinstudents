@@ -83,6 +83,11 @@ html
       .project-footer { font-size: 12px; border-top: 1px solid #ddd; padding-top: 5px; color: #888;
       margin: 30px 0 40px; }
 
+      .fb-comments, .fb-comments > span, .fb-comments iframe[style] {width: 100% !important;}
+      @media (max-width: 499px) {
+        .fb-comments, .fb-comments > span, .fb-comments iframe[style] { display: none !important; }
+      }
+
     script
       $(function () {
         $('.project-link').on('click', function (e) {
@@ -103,7 +108,7 @@ html
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=573616499320153";
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=190940974391566";
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
 
