@@ -83,13 +83,16 @@ var _directory = null
 
 function getDirectoryCached (req, next) {
   if (_directory) {
+    console.log('CACHED DIRECTORY', _directory);
     next(null, _directory);
   } else {
     olinapps.directory.people(req, function (err, directory) {
       if (err || !directory || !directory.people) {
+        console.log('COULD NOT FETCH DIRECTORY');
         next(err || 'Could not fetch directory.', {people: []});
       } else {
         _directory = directory;
+        console.log('FETCHED DIRECTORY', _directory);
         next(null, _directory);
       }
     });
