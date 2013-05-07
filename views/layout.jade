@@ -34,7 +34,6 @@ html
       .project-title { margin: 40px 0 10px; font-size: 40px; }
       .project-title a { display: block; }
       .project-title { position: relative; }
-      #projects .project-title::before { content: attr(data-year); position: absolute; right: 102%; font-size: 22px; color: #aaa; }
       .project-private .project-title a { background: #eee; }
       .project-title a:hover { background: #ff6; }
       .project-small .project-title { font-size: 26px; margin-top: 25px; margin-bottom: 5px; }
@@ -54,6 +53,8 @@ html
       .project-image img { display: block; margin: 0 auto; }
 
       @media (min-width: 500px) {
+        #projects .project-title::before { content: attr(data-year); position: absolute; right: 102%; font-size: 22px; color: #bbb; }
+
         .project-images { display: table; width: 100%; }
         .project-images-cell { display: table-cell; text-align: center; }
         .project-image { height: 150px; width: 150px; margin-right: 10px; display: inline-block; }
