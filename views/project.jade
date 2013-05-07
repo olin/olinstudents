@@ -8,8 +8,9 @@ block content
         i= project.when
         if project.creators && project.creators.length
           |  &mdash; 
+      | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''}
       if project.creators && project.creators.length
-        | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''} By <b>
+        |  By <b>
         != project.creators.join('</b>, <b>')
         | </b>.
 
