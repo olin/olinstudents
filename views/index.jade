@@ -20,7 +20,7 @@ block content
         p.project-subtitle
           if project.when
             i= project.when
-            if project.creators && project.creators.length
+            if project.creators && project.creators.length || project.summary
               |  &mdash; 
           | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''}
           if project.creators && project.creators.length
