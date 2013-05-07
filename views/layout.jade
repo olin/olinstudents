@@ -62,9 +62,11 @@ html
       .project-image-cell { display: table-cell; text-align: center; vertical-align: middle; }
       .project-image img { display: block; margin: 0 auto; }
 
-      @media (min-width: 500px) {
+      @media (min-width: 940px) {
         #projects .project-title::before { content: attr(data-year); position: absolute; right: 102%; font-size: 22px; color: #bbb; }
+      }
 
+      @media (min-width: 500px) {
         .project-images { display: table; width: 100%; }
         .project-images-cell { display: table-cell; text-align: center; }
         .project-image { height: 150px; width: 150px; margin-right: 10px; display: inline-block; }
