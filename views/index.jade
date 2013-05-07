@@ -2,7 +2,9 @@ extends layout
 
 block content
   if user
-    p.alert(style="margin-top: 20px;") You are logged in. Titles in grey are those not public outside the Olin community. You can edit any project you are listed as having been involved in. Believe in yourself.
+    p.alert.alert-success(style="margin-top: 20px;") You are logged in. Titles in grey are those not public outside the Olin community. You can edit any project you are listed as having been involved in. Believe in yourself.
+  else
+    p.alert.alert-info(style="margin-top: 20px;") You are not logged in. To submit an article or see Olin-only articles, click "Login" in the header bar.
 
   ul(id='projects')
     for project in projects
