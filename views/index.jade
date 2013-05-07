@@ -9,7 +9,7 @@ block content
   ul(id='projects')
     for project in projects
       li(class="project " + (project.large ? 'project-large' : 'project-small') + ' ' + (project.published ? 'project-public' : 'project-private'))
-        h1.project-title
+        h1.project-title(data-year=((project.when || '').match(/\d{4}/) || [''])[0])
           a(href="/projects/" + project._id)= project.title
             if (project.videos || []).length
               |  
