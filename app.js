@@ -111,6 +111,7 @@ app.get('/projects/:id?', function (req, res, next) {
   try {
     db.projects.findOne({
       _id: db.ObjectId(req.params.id),
+      deleted: null
     }, function (err, project) {
       if ('edit' in req.query) {
         project = project || {id: null, body: '', creators: [req.user.id]},
@@ -147,7 +148,10 @@ app.get('/projects/:id?', function (req, res, next) {
 })
 
 app.get('/projects', function (req, res) {
-  db.projects.find(req.user ? {} : {
+  db.projects.find(req.user ? {
+    deleted: null
+  } : {
+    deleted: null,
     published: true
   }).sort({date: -1}, function (err, docs) {
     console.log(docs);
@@ -206,6 +210,22 @@ function getEmbeds (list, type, type2) {
   }
 }
 
+app.post('/projects/:id/delete', function (req, res) {
+  db.projects.findOne({
+    _id: db.ObjectId(req.params.id),
+    deleted: null
+  }, function (err, project) {
+    if (!project || !isAuthorized(project, req)) {
+      return res.json({error: true, message: 'You do not have permission to edit this project.'}, 400);
+    }
+
+    project.deleted = true;
+    db.projects.save(project, function (err, project) {
+      res.redirect('/');
+    });
+  });
+});
+
 app.post('/projects/:id?', function (req, res) {
   if (!(req.body.title)) {
     return res.json({error: true, message: 'Invalid project. Please enter at least a title.'}, 500);
@@ -213,6 +233,7 @@ app.post('/projects/:id?', function (req, res) {
 
   db.projects.findOne({
     _id: db.ObjectId(req.params.id),
+    deleted: null
   }, function (err, project) {
     if (project && !isAuthorized(project, req)) {
       return res.json({error: true, message: 'You do not have permission to edit this project.'}, 400);
@@ -247,7 +268,8 @@ app.post('/projects/:id?', function (req, res) {
         date: Date.now(),
 
         large: req.body.public || req.body.body.length > 500,
-        published: !!req.body.public
+        published: !!req.body.public,
+        deleted: null
       }, {
         upsert: true
       }, function () {

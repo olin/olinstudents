@@ -50,7 +50,7 @@ block content
         if link.description
           p= (link.description || '').substr(0, 100) + (link.description.length > 100 ? '...' : '')
 
-    form(action="/delete", method="post")
+    form(action="/projects/" + project._id + "/delete", method="post")
       p.project-footer
         if canedit
           span(style="float: right")
