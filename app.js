@@ -17,7 +17,10 @@ var express = require('express')
 var app = express(), db;
 
 app.configure(function () {
-  db = mongojs(process.env.MONGOLAB_URI || 'olinprojects', ['projects']);
+  db = mongojs.connect(process.env.MONGOLAB_URI || 'olinprojects', ['projects'], {
+    auto_reconnect: true,
+    poolSize: 5
+  });
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
