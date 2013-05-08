@@ -40,6 +40,11 @@ app.configure(function () {
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
+setInterval(function () {
+  // ping
+  db.projects.findOne({}, console.log)
+}, 5000);
+
 app.configure('development', function () {
   app.set('host', 'localhost:3000');
   app.use(express.errorHandler());
