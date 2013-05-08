@@ -25,5 +25,5 @@ block content
           | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''}
           if project.creators && project.creators.length
             |  By <b>
-            != project.creators.join('</b>, <b>')
+            != project.creators.map(function (a) { return '<a href="/projects/?user=' + encodeURIComponent(a) + '">' + a + '</a>'; }).join('</b>, <b>')
             | </b>.

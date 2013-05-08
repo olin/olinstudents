@@ -40,9 +40,9 @@ app.configure(function () {
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
+// Ping db, since it seems to embrace death.
 setInterval(function () {
-  // ping
-  db.projects.findOne({}, console.log)
+  db.projects.findOne({}, function () { });
 }, 5000);
 
 app.configure('development', function () {
@@ -156,12 +156,17 @@ app.get('/projects/:id?', function (req, res, next) {
 })
 
 app.get('/projects', function (req, res) {
-  db.projects.find(req.user ? {
+  var crit = {
     deleted: null
-  } : {
-    deleted: null,
-    published: true
-  }).sort({date: -1}, function (err, docs) {
+  };
+  if (!req.user) {
+    crit.published = true;
+  }
+  if ('user' in req.query) {
+    crit.creators = req.query.user;
+  }
+
+  db.projects.find(crit).sort({date: -1}, function (err, docs) {
     console.log(docs);
     res.render('index', {
       user: req.user,
