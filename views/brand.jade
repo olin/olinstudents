@@ -2,10 +2,10 @@
 style
   #brand { background: #444; margin: 0; padding: 0; height: 40px; border-bottom: 1px solid #fff; }
 
-  #name { font-family: "PT Sans Narrow"; font-size: 20px; color: #ddd; letter-spacing: 1px; font-weight: bold; }
-  #name img { margin-right: 8px; vertical-align: top; }
+  #name { font-family: "PT Sans Narrow"; font-size: 18px; color: #ddd; letter-spacing: 1px; font-weight: bold; vertical-align: middle; }
+  #name img { margin-right: 8px; vertical-align: middle; margin-top: -2px }
   #name { display: block; padding: 10px 15px 0 10px; float: left; height: 30px; }
-  #name:hover { background: #666;}
+  #name:hover { background: #666; text-decoration: none; }
 
   #brand .state { margin: 8px 10px 0; color: #ddd; }
 
@@ -34,11 +34,12 @@ style
     margin-top: 40px;
   }
   #olinstar li a { display: block; padding: 5px 15px; cursor: pointer; color: #ddd; font-family: "PT Sans Narrow"; font-size: 16px; letter-spacing: 1px; }
-  #olinstar li a:hover { background: #666; }
-  #olinstar { opacity: 0; }
+  #olinstar li a:hover { background: #666; text-decoration: none; }
+  #olinstar { display: none; }
   #olinstar li a:hover:after { content: " \2192" }
 
-  #brand #name:hover + #olinstar, #olinstar:hover { opacity: 1.0; }
+  #brand #name:hover + #olinstar, #olinstar:hover { display: block; }
+  /*
   #brand #name:hover + #olinstar, #olinstar:hover {
     -webkit-transition: 0s all;   
     -moz-transition: 0 all;   
@@ -53,6 +54,7 @@ style
     -o-transition: 0.25s all;   
     transition: 0.25s all;
   }
+  */
 
 #brand.container-fluid
   span.state
