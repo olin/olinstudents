@@ -177,21 +177,6 @@ app.get('/projects', function (req, res) {
   })
 });
 
-app.all('*', olinapps.loginRequired);
-
-// app.post('/delete', function (req, res) {
-//   db.projects.remove({
-//     _id: db.ObjectId(req.body.id),
-//     submitter: req.user.username
-//   }, {
-//     $set: {
-//       published: false
-//     }
-//   }, function () {
-//     res.redirect('/');
-//   })
-// });
-
 
 function splitLines (lines) {
   return String(lines).split(/\r?\n/).filter(function (a) {
@@ -223,7 +208,7 @@ function getEmbeds (list, type, type2) {
   }
 }
 
-app.post('/projects/:id/delete', function (req, res) {
+app.post('/projects/:id/delete', olinapps.loginRequired, function (req, res) {
   db.projects.findOne({
     _id: db.ObjectId(req.params.id),
     deleted: null
@@ -239,7 +224,7 @@ app.post('/projects/:id/delete', function (req, res) {
   });
 });
 
-app.post('/projects/:id?', function (req, res) {
+app.post('/projects/:id?', olinapps.loginRequired, function (req, res) {
   if (!(req.body.title)) {
     return res.json({error: true, message: 'Invalid project. Please enter at least a title.'}, 500);
   }
