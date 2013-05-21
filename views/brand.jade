@@ -1,0 +1,98 @@
+// Olin* branding
+style
+  #brand { background: #444; margin: 0; padding: 0; height: 40px; border-bottom: 1px solid #fff; }
+
+  #name { font-family: "PT Sans Narrow"; font-size: 20px; color: #ddd; letter-spacing: 1px; font-weight: bold; }
+  #name img { margin-right: 8px; vertical-align: top; }
+  #name { display: block; padding: 10px 15px 0 10px; float: left; height: 30px; }
+  #name:hover { background: #666;}
+
+  #brand .state { margin: 8px 10px 0; color: #ddd; }
+
+  @media (max-width: 499px) {
+    #brand #name { display: none; }
+    #brand .state { text-align: center; display: block; }
+    #brand .state .desktop { display: none;} 
+  }
+  @media (min-width: 500px) {
+    #brand .state { float: right; }
+    #brand .state .antidesktop { display: none;} 
+  }
+
+  #olinstar, #olinstar li {
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    z-index: 1000;
+    display: block;
+    list-style: none;
+    color: #ddd;
+    background: #444;
+    max-width: 180px;
+    margin: 0;
+  }
+  #olinstar {
+    margin-top: 40px;
+  }
+  #olinstar li a { display: block; padding: 5px 15px; cursor: pointer; color: #ddd; font-family: "PT Sans Narrow"; font-size: 16px; letter-spacing: 1px; }
+  #olinstar li a:hover { background: #666; }
+  #olinstar { opacity: 0; }
+  #olinstar li a:hover:after { content: " \2192" }
+
+  #brand #name:hover + #olinstar, #olinstar:hover { opacity: 1.0; }
+  #brand #name:hover + #olinstar, #olinstar:hover {
+    -webkit-transition: 0s all;   
+    -moz-transition: 0 all;   
+    -ms-transition: 0 all;   
+    -o-transition: 0 all;   
+    transition: 0 all;
+  }
+  #olinstar {
+    -webkit-transition: 0.25s all;   
+    -moz-transition: 0.25s all;   
+    -ms-transition: 0.25s all;   
+    -o-transition: 0.25s all;   
+    transition: 0.25s all;
+  }
+
+#brand.container-fluid
+  span.state
+    if user
+      span.desktop Logged in as 
+      code= user.id
+      span.desktop .
+      |   
+      a.btn.btn-danger.btn-mini(href="/logout") Logout
+        span.antidesktop  of #{title}
+    else
+      a.btn.btn-success.btn-mini(href="/authenticate") Login to #{title}
+
+  a#name(href="/")
+    img(src="/images/olinlogo.png", height=18, width=38)
+    | Olin
+    span(style="color: #F90") Projects
+    | .com
+
+  ul#olinstar
+    if self != 'projects'
+      li
+        a Olin
+          span(style="color: #F90") Projects
+          | .com
+    if self != 'students'
+      li
+        a(href="http://olinstudents.com/") Olin
+          span(style="color: #3AC") Students
+          | .com
+    if self != 'clubs'
+      li
+        a(href="http://olinclubs.com/") Olin
+          span(style="color: #3Ca") Clubs
+          | .com
+    if self != 'apps'
+      li
+        a(href="http://olinapps.com/") Olin
+          span(style="color: #C26") Apps
+          | .com
+    li
+      a(href="http://olin.edu/") Olin
+        span(style="color: #CC0") .edu

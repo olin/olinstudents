@@ -6,26 +6,31 @@ html
 
     // JQuery
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+
+    // Custom code
     script(src='/javascripts/script.js')
+
+    // Bootstrap
     link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css", rel="stylesheet")
     script(src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js")
-    script(src="http://fitvidsjs.com/js/jquery.fitvids.js")
-    link(href="http://harvesthq.github.io/chosen/chosen/chosen.css", rel="stylesheet")
-    script(src="http://harvesthq.github.io/chosen/chosen/chosen.jquery.js")
+
+    // Bootstrap lightbox
     link(href="http://jbutz.github.io/bootstrap-lightbox/assets/css/bootstrap-lightbox.min.css", rel="stylesheet")
     script(src="http://jbutz.github.io/bootstrap-lightbox/assets/js/bootstrap-lightbox.min.js")
 
+    // Fitvids
+    script(src="http://fitvidsjs.com/js/jquery.fitvids.js")
+
+    // Chosen extension
+    link(href="http://harvesthq.github.io/chosen/chosen/chosen.css", rel="stylesheet")
+    script(src="http://harvesthq.github.io/chosen/chosen/chosen.jquery.js")
+
+    // Fonts
     link(href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700', rel='stylesheet', type='text/css')
+
 
     style
       body { padding-bottom: 60px; }
-
-      #brand { background: #333; margin: 0; padding: 0; height: 40px; }
-      #name { font-family: "PT Sans Narrow"; font-size: 20px; color: #ddd; letter-spacing: 1px; font-weight: bold; }
-      #name img { height: 18px; margin-right: 8px; vertical-align: top; }
-      #name { display: block; padding: 10px 15px 0 10px; float: left; height: 30px; }
-      #name:hover { background: #666;}
-      #brand .btn { float: right; margin: 10px 10px 0 }
       
       @media (max-width: 767px) {
         body { padding: 0; }
@@ -119,18 +124,8 @@ html
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
 
-    #brand.container-fluid
-      a.btn.btn-success.btn-mini(href="/projects/?edit") List your Project or Idea
-      if user
-        a.btn.btn-warning.btn-mini(href="/logout") Logout
-      else
-        a.btn.btn-success.btn-mini(href="/authenticate") Login
-      |  
-
-      a#name(href="/")
-        img(src="/images/olinlogo.png")
-        = title
-        | .com
+    self = 'projects'
+    include brand
 
     #content.container-fluid
       block content
