@@ -1,6 +1,9 @@
 extends layout
 
 block content
+  link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css", rel="stylesheet")
+  link(href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css", rel="stylesheet")
+
   if user
     p.alert.alert-success(style="margin-top: 20px;") You are logged in. Titles in grey are those not public outside the Olin community. You can edit any project you are listed as having been involved in. Believe in yourself.
       a.btn.btn-success.btn-large.input-block-level(href="/projects/?edit", style="margin-top: 10px;") List your Project or Idea &rarr;
@@ -11,7 +14,10 @@ block content
     for project in projects
       li(class="project " + (project.large ? 'project-large' : 'project-small') + ' ' + (project.published ? 'project-public' : 'project-private'))
         h1.project-title(data-year=((project.when || '').match(/\d{4}/) || [''])[0])
-          a(href="/projects/" + project._id)= project.title
+          a(href="/projects/" + project._id)
+            if !project.published
+              i.icon-lock(style="font-size: 0.7em; color: #888; margin: 0 10px; text-decoration: none;")
+            = project.title
             if (project.videos || []).length
               |  
               span.badge(style="vertical-align: middle") Video
