@@ -46,7 +46,7 @@ app.configure('development', function () {
 });
 
 app.configure('production', function () {
-  app.set('host', 'olinstudents.herokuapp.com');
+  app.set('host', 'www.olinstudents.com');
 });
 
 
