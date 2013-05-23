@@ -1,36 +1,107 @@
 extends layout
 
 block content
-  link(href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css", rel="stylesheet")
-  link(href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css", rel="stylesheet")
+  p.alert(style='margin: 10px 0 25px;')
+    span.btn.btn-info.btn-mini(style="float: right", onclick='_t = $(\'.span3 a\'); _t = _t[(Math.random()*_t.length)|0].href; window.location.href = _t') Randomize!
+    | The personal websites and online portfolios of Olin College students.
 
-  if user
-    p.alert.alert-success(style="margin-top: 20px;") You are logged in. Titles in grey are those not public outside the Olin community. You can edit any project you are listed as having been involved in. Believe in yourself.
-      a.btn.btn-success.btn-large.input-block-level(href="/projects/?edit", style="margin-top: 10px;") List your Project or Idea &rarr;
-  else
-    p.alert.alert-info(style="margin-top: 20px;") You are not logged in. To submit an article or see Olin-only articles, click "Login" in the header bar.
+  style
+    .students { text-align: center; font-size: 16px;}
+    .students a { padding: 10px 0; display: block; font-weight: bold; }
+    .students a:hover { background: #fff; }
 
-  ul(id='projects')
-    for project in projects
-      li(class="project " + (project.large ? 'project-large' : 'project-small') + ' ' + (project.published ? 'project-public' : 'project-private'))
-        h1.project-title(data-year=((project.when || '').match(/\d{4}/) || [''])[0])
-          a(href="/projects/" + project._id)
-            if !project.published
-              i.icon-lock(style="font-size: 0.7em; color: #888; margin: 0 10px; text-decoration: none;")
-            = project.title
-            if (project.videos || []).length
-              |  
-              span.badge(style="vertical-align: middle") Video
-            // if !project.published
-            //  |  
-            //  span.badge.badge(style="vertical-align: middle") Unpublished
-        p.project-subtitle
-          if project.when
-            i= project.when
-            if project.creators && project.creators.length || project.summary
-              |  &mdash; 
-          | #{project.summary ? project.summary.replace(/\.?$/, '.') : ''}
-          if project.creators && project.creators.length
-            |  By <b>
-            != project.creators.map(function (a) { return '<a href="/projects/?user=' + encodeURIComponent(a) + '">' + a + '</a>'; }).join('</b>, <b>')
-            | </b>.
+  h4 Students in 2013
+  .row-fluid.students
+    .span3
+      a(href='http://ibeitia.com') Iñigo Beitia
+    .span3
+      a(href='http://jezzpaul.com') Paul Booth
+    .span3
+      a(href='http://ericadchin.weebly.com') Erica Chin
+    .span3
+      a(href='http://reyner.be') Reyner Crosby
+  .row-fluid.students
+    .span3
+      a(href='http://www.andreacuadra.com') Andrea Cuadra
+    .span3
+      a(href='http://mollyfarison.com') Molly Farison
+    .span3
+      a(href='http://freedavid.info') David Gaynor
+    .span3
+      a(href='HTTP://AARONJGREENBERG.COM') Aaron Greenberg
+  .row-fluid.students
+    .span3
+      a(href='http://www.drewheine.com') Andrew Heine
+    .span3
+      a(href='http://michaelheyns.com') Michael Heyns
+    .span3
+      a(href='http://jialiyahuang.com/') Jialiya Huang
+    .span3
+      a(href='http://www.ercjns.com') Eric Jones
+  .row-fluid.students
+    .span3
+      a(href='http://aiswaryakolisetty.com') Aiswarya Kolisetty
+    .span3
+      a(href='http://caseylandey.com') Casey Landey
+    .span3
+      a(href='http://jenny-ma.weebly.com') Jenny Ma
+    .span3
+      a(href='http://jonamckay.com') Jon McKay
+  .row-fluid.students
+    .span3
+      a(href='http://students.olin.edu/2013/rmcmullen') Robert McMullen
+    .span3
+      a(href='http://timryan.org') Tim Ryan
+    .span3
+      a(href='http://www.samsyang.com') Sam Yang
+
+  h4 Students in 2014
+  .row-fluid.students
+    .span3
+      a(href='http://jceipek.com') Julian Ceipek
+    .span3
+      a(href='http://itdaniher.com') Ian Daniher
+    .span3
+      a(href='http://www.markmuraoka.com') Mark Muraoka
+    .span3
+      a(href='http://juliana.io') Juliana Nazare
+  .row-fluid.students
+    .span3
+      a(href='http://roboticmayhem.com') Nick Ostrom
+    .span3
+      a(href='http://about.me/brettrowley') Brett Rowley
+    .span3
+      a(href='http://dantesantos.com/') Dante Santos
+    .span3
+      a(href='http://weeprojects.weebly.com') Adela Wee
+
+  h4 Students in 2015
+  .row-fluid.students
+    .span3
+      a(href='http://nickeyre.com') Nick Eyre
+    .span3
+      a(href='http://www.alecradford.com/') Alec Radford
+    .span3
+      a(href='http://www.flickr.com/photos/franz_eric_schneider_portfolios') Eric Schneider
+    .span3
+      a(href='http://evansimpson.com') Evan Simpson
+  .row-fluid.students
+    .span3
+      a(href='http://jessica.sutantio.com') Jessica Sutantio
+
+  h4 Students in 2016
+  .row-fluid.students
+    .span3
+      a(href='http://madison.olinstudents.com') Madison May
+    .span3
+      a(href='http://williamsaulnier.com') William Saulnier
+
+  hr
+    
+  p
+    small
+      | Contact
+      a(href='mailto:timothy.ryan@students.olin.edu') Tim Ryan 2013
+      | for free hosting or a
+      i name
+      | .olinstudents.com domain.
